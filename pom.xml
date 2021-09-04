@@ -105,7 +105,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.TotalFreedomMC</groupId>
+            <groupId>com.github.AtlasMediaGroup</groupId>
             <artifactId>BukkitTelnet</artifactId>
             <version>541e9fdb84</version>
             <scope>provided</scope>
