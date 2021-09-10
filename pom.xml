@@ -33,9 +33,9 @@
     </organization>
 
     <scm>
-        <connection>scm:git:git@github.com:TFPatches/TotalFreedomMod.git</connection>
-        <developerConnection>scm:git:git@github.com:TFPatches/TotalFreedomMod.git</developerConnection>
-        <url>git@github.com:TFPatches/TotalFreedomMod.git</url>
+        <connection>scm:git:git@github.com:AtlasMediaGroup/TotalFreedomMod.git</connection>
+        <developerConnection>scm:git:git@github.com:AtlasMediaGroup/TotalFreedomMod.git</developerConnection>
+        <url>git@github.com:AtlasMediaGroup/TotalFreedomMod.git</url>
     </scm>
 
     <repositories>
@@ -44,20 +44,6 @@
             <id>atlas-nexus-01-totalfreedom-development</id>
             <url>https://nexus-01.core.atlas-media.co.uk/repository/totalfreedom-development/</url>
         </repository>
-
-        <!-- This one seems to be being a pain to move over as a Cache, not sure why -->
-        <repository>
-            <id>dv8tion</id>
-            <name>m2-dv8tion</name>
-            <url>https://m2.dv8tion.net/releases/</url>
-        </repository>
-
-        <!-- I also couldn't manage to get this one to easily move across, not 100% sure why -->
-        <repository>
-            <id>esentialsx-repo</id>
-            <url>https://repo.essentialsx.net/releases/</url>
-        </repository>
-        
         
     </repositories>
 
