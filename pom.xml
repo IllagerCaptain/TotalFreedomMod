@@ -41,8 +41,8 @@
     <repositories>
         
         <repository>
-            <id>totalfreedom-development</id>
-            <url>https://atlasmedia.jfrog.io/artifactory/totalfreedom-development/</url>
+            <id>atlas-nexus-01-totalfreedom-development</id>
+            <url>https://nexus-01.core.atlas-media.co.uk/repository/totalfreedom-development/</url>
         </repository>
 
         <repository>
