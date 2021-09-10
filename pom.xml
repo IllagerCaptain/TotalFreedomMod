@@ -133,9 +133,9 @@
         </dependency>
 
         <dependency>
-            <groupId>ca.momoperes</groupId>
-            <artifactId>mojangson</artifactId>
-            <version>1.0-20210821.193420-1</version>
+            <groupId>com.github.speedxx</groupId>
+            <artifactId>Mojangson</artifactId>
+            <version>1957eef8d6</version>
         </dependency>
 
         <dependency>
