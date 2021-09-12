@@ -39,22 +39,31 @@
     </scm>
 
     <repositories>
-        
+        <!-- !!!! ############################ !!!! -->
+        <!-- WARNING: Do not add additional repos here. PR's will not be approved where changes are made to repo settings -->
+        <!-- !!!! ############################ !!!! -->
+
+        <!-- The core ATLAS Nexus Repository, which acts as a Maven repo and Maven Proxy for our dependencies -->
         <repository>
             <id>atlas-nexus-01-totalfreedom-development</id>
             <url>https://nexus-01.core.atlas-media.co.uk/repository/totalfreedom-development/</url>
         </repository>
 
+        <!-- We've not been able to move this over to be cached by Nexus. Further investigation will be required -->
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.sk89q.com/repo/</url>
         </repository>
 
+        <!-- We've not been able to move this over to be cached by Nexus. Further investigation will be required -->
         <repository>
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
 
+        <!-- !!!! ############################ !!!! -->
+        <!-- WARNING: Do not add additional repos here. PR's will not be approved where changes are made to repo settings -->
+        <!-- !!!! ############################ !!!! -->
     </repositories>
 
     <dependencies>
