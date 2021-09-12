@@ -90,11 +90,6 @@
              <id>sk89q-repo</id>
              <url>https://maven.sk89q.com/repo/</url>
          </repository>
-
-         <repository>
-             <id>esentialsx-repo</id>
-             <url>https://repo.essentialsx.net/releases/</url>
-         </repository>
         
     </repositories>
 
