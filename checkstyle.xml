@@ -7,7 +7,7 @@
     <property name="severity" value="warning"/>
     <property name="fileExtensions" value="java, properties, xml"/>
     <module name="SuppressionFilter">
-        <property name="file" value="supressions.xml"/>
+        <property name="file" value="suppressions.xml"/>
     </module>
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
