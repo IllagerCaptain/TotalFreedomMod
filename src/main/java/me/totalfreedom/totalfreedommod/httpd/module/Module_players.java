@@ -34,10 +34,10 @@ public class Module_players extends HTTPDModule
         // All online players
         for (Player player : Bukkit.getOnlinePlayers())
         {
-            if (!plugin.al.isVanished(player.getName()))
+            if (!plugin.adminList.isVanished(player.getName()))
             {
                 players.add(player.getName());
-                if (plugin.al.isAdmin(player) && !plugin.al.isAdminImpostor(player))
+                if (plugin.adminList.isAdmin(player) && !plugin.adminList.isAdminImpostor(player))
                 {
                     onlineadmins.add(player.getName());
                 }
@@ -45,7 +45,7 @@ public class Module_players extends HTTPDModule
         }
 
         // Admins
-        for (Admin admin : plugin.al.getActiveAdmins())
+        for (Admin admin : plugin.adminList.getActiveAdmins())
         {
             final String username = admin.getName();
             switch (admin.getRank())
@@ -68,7 +68,7 @@ public class Module_players extends HTTPDModule
             }
         }
 
-        masterbuilders.addAll(plugin.pl.getMasterBuilderNames());
+        masterbuilders.addAll(plugin.playerList.getMasterBuilderNames());
 
         // Developers
         developers.addAll(FUtil.DEVELOPER_NAMES);

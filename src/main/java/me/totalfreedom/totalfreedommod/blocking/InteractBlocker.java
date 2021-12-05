@@ -1,6 +1,6 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.Groups;
 import org.bukkit.ChatColor;
@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class InteractBlocker extends FreedomService
+public class InteractBlocker extends AbstractService
 {
     @Override
     public void onStart()
@@ -89,7 +89,7 @@ public class InteractBlocker extends FreedomService
         {
             case WATER_BUCKET:
             {
-                if (plugin.al.isAdmin(player) || ConfigEntry.ALLOW_WATER_PLACE.getBoolean())
+                if (plugin.adminList.isAdmin(player) || ConfigEntry.ALLOW_WATER_PLACE.getBoolean())
                 {
                     break;
                 }
@@ -102,7 +102,7 @@ public class InteractBlocker extends FreedomService
 
             case LAVA_BUCKET:
             {
-                if (plugin.al.isAdmin(player) || ConfigEntry.ALLOW_LAVA_PLACE.getBoolean())
+                if (plugin.adminList.isAdmin(player) || ConfigEntry.ALLOW_LAVA_PLACE.getBoolean())
                 {
                     break;
                 }

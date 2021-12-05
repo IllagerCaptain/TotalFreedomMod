@@ -38,7 +38,7 @@ public class Module_list extends HTTPDModule
 
             for (Player player : Bukkit.getOnlinePlayers())
             {
-                if (plugin.al.isVanished(player.getName()))
+                if (plugin.adminList.isVanished(player.getName()))
                 {
                     continue;
                 }
@@ -48,7 +48,7 @@ public class Module_list extends HTTPDModule
                     imposters.add(player.getName());
                 }
 
-                if (plugin.pl.getData(player).isMasterBuilder())
+                if (plugin.playerList.getData(player).isMasterBuilder())
                 {
                     masterbuilders.add(player.getName());
                 }
@@ -68,14 +68,14 @@ public class Module_list extends HTTPDModule
                     owners.add(player.getName());
                 }
 
-                if (!plugin.al.isAdmin(player) && hasSpecialTitle(player))
+                if (!plugin.adminList.isAdmin(player) && hasSpecialTitle(player))
                 {
                     operators.add(player.getName());
                 }
 
-                if (hasSpecialTitle(player) && plugin.al.isAdmin(player) && !plugin.al.isVanished(player.getName()))
+                if (hasSpecialTitle(player) && plugin.adminList.isAdmin(player) && !plugin.adminList.isVanished(player.getName()))
                 {
-                    Admin admin = plugin.al.getAdmin(player);
+                    Admin admin = plugin.adminList.getAdmin(player);
                     switch (admin.getRank())
                     {
                         case ADMIN:
@@ -127,11 +127,11 @@ public class Module_list extends HTTPDModule
 
             for (Player player : onlinePlayers)
             {
-                if (plugin.al.isVanished(player.getName()))
+                if (plugin.adminList.isVanished(player.getName()))
                 {
                     continue;
                 }
-                String tag = plugin.rm.getDisplay(player).getTag();
+                String tag = plugin.rankManager.getDisplay(player).getTag();
                 body.append("<li>").append(tag).append(player.getName()).append("</li>\r\n");
             }
 
@@ -143,7 +143,7 @@ public class Module_list extends HTTPDModule
 
     public boolean isImposter(Player player)
     {
-        return plugin.al.isAdminImpostor(player) || plugin.pl.isPlayerImpostor(player);
+        return plugin.adminList.isAdminImpostor(player) || plugin.playerList.isPlayerImpostor(player);
     }
 
     public boolean hasSpecialTitle(Player player)

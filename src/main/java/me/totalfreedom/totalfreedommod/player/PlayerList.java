@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.rank.Rank;
@@ -17,7 +17,7 @@ import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-public class PlayerList extends FreedomService
+public class PlayerList extends AbstractService
 {
 
     public final Map<String, FPlayer> playerMap = Maps.newHashMap(); // ip,dataMap
@@ -81,7 +81,7 @@ public class PlayerList extends FreedomService
     public List<String> getMasterBuilderNames()
     {
         List<String> masterBuilders = new ArrayList<>();
-        for (PlayerData playerData : plugin.pl.dataMap.values())
+        for (PlayerData playerData : plugin.playerList.dataMap.values())
         {
             if (playerData.isMasterBuilder())
             {
@@ -103,7 +103,7 @@ public class PlayerList extends FreedomService
 
     public boolean isTelnetMasterBuilder(PlayerData playerData)
     {
-        Admin admin = plugin.al.getEntryByName(playerData.getName());
+        Admin admin = plugin.adminList.getEntryByName(playerData.getName());
         return admin != null && admin.getRank().isAtLeast(Rank.ADMIN) && playerData.isMasterBuilder();
     }
 
@@ -144,15 +144,15 @@ public class PlayerList extends FreedomService
     public Boolean isPlayerImpostor(Player player)
     {
         PlayerData playerData = getData(player);
-        return plugin.dc.enabled
-                && !plugin.al.isAdmin(player)
+        return plugin.discord.enabled
+                && !plugin.adminList.isAdmin(player)
                 && (playerData.hasVerification())
                 && !playerData.getIps().contains(FUtil.getIp(player));
     }
 
-    public boolean IsImpostor(Player player)
+    public boolean isImpostor(Player player)
     {
-        return isPlayerImpostor(player) || plugin.al.isAdminImpostor(player);
+        return isPlayerImpostor(player) || plugin.adminList.isAdminImpostor(player);
     }
 
     public void verify(Player player, String backupCode)
@@ -166,16 +166,16 @@ public class PlayerList extends FreedomService
         playerData.addIp(FUtil.getIp(player));
         save(playerData);
 
-        if (plugin.al.isAdminImpostor(player))
+        if (plugin.adminList.isAdminImpostor(player))
         {
-            Admin admin = plugin.al.getEntryByName(player.getName());
+            Admin admin = plugin.adminList.getEntryByName(player.getName());
             admin.setLastLogin(new Date());
             admin.addIp(FUtil.getIp(player));
-            plugin.al.updateTables();
-            plugin.al.save(admin);
+            plugin.adminList.updateTables();
+            plugin.adminList.save(admin);
         }
 
-        plugin.rm.updateDisplay(player);
+        plugin.rankManager.updateDisplay(player);
     }
 
     public void syncIps(Admin admin)
@@ -183,19 +183,19 @@ public class PlayerList extends FreedomService
         PlayerData playerData = getData(admin.getName());
         playerData.clearIps();
         playerData.addIps(admin.getIps());
-        plugin.pl.save(playerData);
+        plugin.playerList.save(playerData);
     }
 
     public void syncIps(PlayerData playerData)
     {
-        Admin admin = plugin.al.getEntryByName(playerData.getName());
+        Admin admin = plugin.adminList.getEntryByName(playerData.getName());
 
         if (admin != null && admin.isActive())
         {
             admin.clearIPs();
             admin.addIps(playerData.getIps());
-            plugin.al.updateTables();
-            plugin.al.save(admin);
+            plugin.adminList.updateTables();
+            plugin.adminList.save(admin);
         }
     }
 

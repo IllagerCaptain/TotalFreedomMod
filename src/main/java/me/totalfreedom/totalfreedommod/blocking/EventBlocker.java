@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import me.totalfreedom.totalfreedommod.util.Groups;
@@ -38,7 +38,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class EventBlocker extends FreedomService
+public class EventBlocker extends AbstractService
 {
     /**
      * /@EventHandler(priority = EventPriority.HIGH)
@@ -159,7 +159,7 @@ public class EventBlocker extends FreedomService
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDropItem(PlayerDropItemEvent event)
     {
-        if (!plugin.al.isAdmin(event.getPlayer()))
+        if (!plugin.adminList.isAdmin(event.getPlayer()))
         {
             event.setCancelled(true);
         }

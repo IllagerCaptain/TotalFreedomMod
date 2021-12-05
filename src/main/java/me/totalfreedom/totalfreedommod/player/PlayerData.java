@@ -46,6 +46,11 @@ public class PlayerData
 
     public PlayerData(ResultSet resultSet)
     {
+        this(resultSet, true);
+    }
+
+    public PlayerData(ResultSet resultSet, boolean cache)
+    {
         try
         {
             name = resultSet.getString("username");
@@ -77,12 +82,12 @@ public class PlayerData
         if (masterBuilder && !verification)
         {
             verification = true;
-            TotalFreedomMod.getPlugin().pl.save(this);
+            if (cache) TotalFreedomMod.getPlugin().playerList.save(this);
         }
         else if (!masterBuilder && discordID == null && verification)
         {
             this.verification = false;
-            TotalFreedomMod.getPlugin().pl.save(this);
+            if (cache) TotalFreedomMod.getPlugin().playerList.save(this);
         }
     }
 

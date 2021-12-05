@@ -1,7 +1,7 @@
 package me.totalfreedom.totalfreedommod.rank;
 
 import java.util.Objects;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-public class RankManager extends FreedomService
+public class RankManager extends AbstractService
 {
     @Override
     public void onStart()
@@ -40,7 +40,7 @@ public class RankManager extends FreedomService
         final Player player = (Player)sender;
 
         // Display impostors
-        if (plugin.al.isAdminImpostor(player))
+        if (plugin.adminList.isAdminImpostor(player))
         {
             return Rank.IMPOSTOR;
         }
@@ -57,23 +57,23 @@ public class RankManager extends FreedomService
             return Title.DEVELOPER;
         }
 
-        if (ConfigEntry.SERVER_EXECUTIVES.getList().contains(player.getName()) && plugin.al.isAdmin(player))
+        if (ConfigEntry.SERVER_EXECUTIVES.getList().contains(player.getName()) && plugin.adminList.isAdmin(player))
         {
             return Title.EXECUTIVE;
         }
         
-        if (ConfigEntry.SERVER_ASSISTANT_EXECUTIVES.getList().contains(player.getName()) && plugin.al.isAdmin(player))
+        if (ConfigEntry.SERVER_ASSISTANT_EXECUTIVES.getList().contains(player.getName()) && plugin.adminList.isAdmin(player))
         {
             return Title.ASSTEXEC;
         }
 
-        if (plugin.al.isVerifiedAdmin(player))
+        if (plugin.adminList.isVerifiedAdmin(player))
         {
             return Title.VERIFIED_ADMIN;
         }
 
         // Master builders show up if they are not an admin
-        if (plugin.pl.getData(player).isMasterBuilder() && !plugin.al.isAdmin(player))
+        if (plugin.playerList.getData(player).isMasterBuilder() && !plugin.adminList.isAdmin(player))
         {
             return Title.MASTER_BUILDER;
         }
@@ -117,7 +117,7 @@ public class RankManager extends FreedomService
         }
 
         // Console admin, get by name
-        Admin admin = plugin.al.getEntryByName(sender.getName());
+        Admin admin = plugin.adminList.getEntryByName(sender.getName());
 
         // Unknown console: RCON?
         if (admin == null)
@@ -137,12 +137,12 @@ public class RankManager extends FreedomService
 
     public Rank getRank(Player player)
     {
-        if (plugin.al.isAdminImpostor(player) || plugin.pl.isPlayerImpostor(player))
+        if (plugin.adminList.isAdminImpostor(player) || plugin.playerList.isPlayerImpostor(player))
         {
             return Rank.IMPOSTOR;
         }
 
-        final Admin entry = plugin.al.getAdmin(player);
+        final Admin entry = plugin.adminList.getAdmin(player);
         if (entry != null)
         {
             return entry.getRank();
@@ -155,7 +155,7 @@ public class RankManager extends FreedomService
     {
         String tag = defaultTag;
 
-        PlayerData playerData = plugin.pl.getData(player);
+        PlayerData playerData = plugin.playerList.getData(player);
         String t = playerData.getTag();
         if (t != null && !t.isEmpty())
         {
@@ -171,10 +171,10 @@ public class RankManager extends FreedomService
         {
             return;
         }
-        FPlayer fPlayer = plugin.pl.getPlayer(player);
-        PlayerData data = plugin.pl.getData(player);
+        FPlayer fPlayer = plugin.playerList.getPlayer(player);
+        PlayerData data = plugin.playerList.getData(player);
         Displayable display = getDisplay(player);
-        if (plugin.al.isAdmin(player) || data.isMasterBuilder() || FUtil.isDeveloper(player))
+        if (plugin.adminList.isAdmin(player) || data.isMasterBuilder() || FUtil.isDeveloper(player))
         {
             String displayName = display.getColor() + player.getName();
             player.setPlayerListName(displayName);
@@ -186,22 +186,22 @@ public class RankManager extends FreedomService
         }
         fPlayer.setTag(getTag(player, display.getColoredTag()));
         updatePlayerTeam(player);
-        plugin.pem.setPermissions(player);
+        plugin.permissionManager.setPermissions(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         final Player player = event.getPlayer();
-        final FPlayer fPlayer = plugin.pl.getPlayer(player);
-        PlayerData target = plugin.pl.getData(player);
+        final FPlayer fPlayer = plugin.playerList.getPlayer(player);
+        PlayerData target = plugin.playerList.getData(player);
 
         // Unban admins
-        boolean isAdmin = plugin.al.isAdmin(player);
+        boolean isAdmin = plugin.adminList.isAdmin(player);
         if (isAdmin)
         {
             // Verify strict IP match
-            if (!plugin.al.isIdentityMatched(player))
+            if (!plugin.adminList.isIdentityMatched(player))
             {
                 FUtil.bcastMsg("Warning: " + player.getName() + " is an admin, but is using an account not registered to one of their ip-list.", ChatColor.RED);
                 fPlayer.setSuperadminIdVerified(false);
@@ -209,25 +209,25 @@ public class RankManager extends FreedomService
             else
             {
                 fPlayer.setSuperadminIdVerified(true);
-                plugin.al.updateLastLogin(player);
+                plugin.adminList.updateLastLogin(player);
             }
         }
 
-        if (plugin.al.isVerifiedAdmin(player))
+        if (plugin.adminList.isVerifiedAdmin(player))
         {
             FUtil.bcastMsg("Warning: " + player.getName() + " is an admin, but does not have any admin permissions.", ChatColor.RED);
         }
 
         // Handle impostors
-        boolean isImpostor = plugin.al.isAdminImpostor(player) || plugin.pl.isPlayerImpostor(player);
+        boolean isImpostor = plugin.adminList.isAdminImpostor(player) || plugin.playerList.isPlayerImpostor(player);
         if (isImpostor)
         {
             FUtil.bcastMsg(ChatColor.AQUA + player.getName() + " is " + Rank.IMPOSTOR.getColoredLoginMessage());
-            if (plugin.al.isAdminImpostor(player))
+            if (plugin.adminList.isAdminImpostor(player))
             {
                 FUtil.bcastMsg("Warning: " + player.getName() + " has been flagged as an admin impostor and has been frozen!", ChatColor.RED);
             }
-            else if (plugin.pl.isPlayerImpostor(player))
+            else if (plugin.playerList.isPlayerImpostor(player))
             {
                 FUtil.bcastMsg("Warning: " + player.getName() + " has been flagged as a player impostor and has been frozen!", ChatColor.RED);
             }
@@ -236,15 +236,15 @@ public class RankManager extends FreedomService
             player.getInventory().clear();
             player.setOp(false);
             player.setGameMode(GameMode.SURVIVAL);
-            plugin.pl.getPlayer(player).getFreezeData().setFrozen(true);
+            plugin.playerList.getPlayer(player).getFreezeData().setFrozen(true);
             player.sendMessage(ChatColor.RED + "You are marked as an impostor, please verify yourself!");
             return;
         }
 
         // Broadcast login message
-        if (isAdmin || FUtil.isDeveloper(player) || plugin.pl.getData(player).isMasterBuilder() || plugin.pl.getData(player).hasLoginMessage())
+        if (isAdmin || FUtil.isDeveloper(player) || plugin.playerList.getData(player).isMasterBuilder() || plugin.playerList.getData(player).hasLoginMessage())
         {
-            if (!plugin.al.isVanished(player.getName()))
+            if (!plugin.adminList.isVanished(player.getName()))
             {
                 FUtil.bcastMsg(craftLoginMessage(player, null));
             }
@@ -253,19 +253,19 @@ public class RankManager extends FreedomService
         // Set display
         updateDisplay(player);
 
-        if (!plugin.pl.isPlayerImpostor(player) && target.hasVerification())
+        if (!plugin.playerList.isPlayerImpostor(player) && target.hasVerification())
         {
             if (target.getTag() != null)
             {
-                plugin.pl.getData(player).setTag(FUtil.colorize(target.getTag()));
+                plugin.playerList.getData(player).setTag(FUtil.colorize(target.getTag()));
             }
         }
     }
 
     public String craftLoginMessage(Player player, String message)
     {
-        Displayable display = plugin.rm.getDisplay(player);
-        PlayerData playerData = plugin.pl.getData(player);
+        Displayable display = plugin.rankManager.getDisplay(player);
+        PlayerData playerData = plugin.playerList.getData(player);
         if (message == null)
         {
             if (playerData.hasLoginMessage())

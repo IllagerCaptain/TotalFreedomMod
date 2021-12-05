@@ -1,7 +1,7 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
 import java.util.List;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.Groups;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class BlockBlocker extends FreedomService
+public class BlockBlocker extends AbstractService
 {
     @Override
     public void onStart()

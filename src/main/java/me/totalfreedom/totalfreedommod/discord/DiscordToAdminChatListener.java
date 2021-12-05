@@ -54,13 +54,13 @@ public class DiscordToAdminChatListener extends ListenerAdapter
             }
             FLog.info(logmessage.toString());
 
-            Bukkit.getOnlinePlayers().stream().filter(player -> TotalFreedomMod.getPlugin().al.isAdmin(player)).forEach(player ->
+            Bukkit.getOnlinePlayers().stream().filter(player -> TotalFreedomMod.getPlugin().adminList.isAdmin(player)).forEach(player ->
             {
                 StringBuilder message = new StringBuilder(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_AQUA + "Discord" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET);
 
                 ComponentBuilder builder = new ComponentBuilder(message.toString());
 
-                Admin admin = TotalFreedomMod.getPlugin().al.getAdmin(player);
+                Admin admin = TotalFreedomMod.getPlugin().adminList.getAdmin(player);
                 String format = admin.getAcFormat();
                 if (!Strings.isNullOrEmpty(format))
                 {

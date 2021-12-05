@@ -8,7 +8,7 @@ import me.totalfreedom.bukkittelnet.api.TelnetCommandEvent;
 import me.totalfreedom.bukkittelnet.api.TelnetPreLoginEvent;
 import me.totalfreedom.bukkittelnet.api.TelnetRequestDataTagsEvent;
 import me.totalfreedom.bukkittelnet.session.ClientSession;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -17,7 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
-public class BukkitTelnetBridge extends FreedomService
+public class BukkitTelnetBridge extends AbstractService
 {
 
     private BukkitTelnet bukkitTelnetPlugin = null;
@@ -42,7 +42,7 @@ public class BukkitTelnetBridge extends FreedomService
             return;
         }
 
-        final Admin admin = plugin.al.getEntryByIpFuzzy(ip);
+        final Admin admin = plugin.adminList.getEntryByIpFuzzy(ip);
 
         if (admin == null || !admin.isActive() || !admin.getRank().hasConsoleVariant())
         {
@@ -56,7 +56,7 @@ public class BukkitTelnetBridge extends FreedomService
     @EventHandler(priority = EventPriority.NORMAL)
     public void onTelnetCommand(TelnetCommandEvent event)
     {
-        if (plugin.cb.isCommandBlocked(event.getCommand(), event.getSender()))
+        if (plugin.commandBlocker.isCommandBlocked(event.getCommand(), event.getSender()))
         {
             event.setCancelled(true);
         }
@@ -74,7 +74,7 @@ public class BukkitTelnetBridge extends FreedomService
             boolean isTelnetAdmin = false;
             boolean isSeniorAdmin = false;
 
-            final Admin admin = plugin.al.getAdmin(player);
+            final Admin admin = plugin.adminList.getAdmin(player);
             if (admin != null)
             {
                 boolean active = admin.isActive();
@@ -88,9 +88,9 @@ public class BukkitTelnetBridge extends FreedomService
             playerTags.put("tfm.admin.isTelnetAdmin", isTelnetAdmin);
             playerTags.put("tfm.admin.isSeniorAdmin", isSeniorAdmin);
 
-            playerTags.put("tfm.playerdata.getTag", plugin.pl.getPlayer(player).getTag());
+            playerTags.put("tfm.playerdata.getTag", plugin.playerList.getPlayer(player).getTag());
 
-            playerTags.put("tfm.essentialsBridge.getNickname", plugin.esb.getNickname(player.getName()));
+            playerTags.put("tfm.essentialsBridge.getNickname", plugin.essentialsBridge.getNickname(player.getName()));
         }
     }
 
@@ -126,7 +126,7 @@ public class BukkitTelnetBridge extends FreedomService
         {
             for (ClientSession session : telnet.appender.getSessions())
             {
-                Admin admin = plugin.al.getEntryByName(session.getUserName().toLowerCase());
+                Admin admin = plugin.adminList.getEntryByName(session.getUserName().toLowerCase());
                 if (admin != null && !admins.contains(admin))
                 {
                     admins.add(admin);

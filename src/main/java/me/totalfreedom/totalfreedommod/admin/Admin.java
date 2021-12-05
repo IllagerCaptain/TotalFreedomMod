@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import me.totalfreedom.totalfreedommod.LogViewer.LogsRegistrationMode;
+import me.totalfreedom.totalfreedommod.services.impl.LogViewer.LogsRegistrationMode;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -158,13 +158,13 @@ public class Admin
         {
             if (getRank().isAtLeast(Rank.ADMIN))
             {
-                if (plugin.btb != null)
+                if (plugin.bukkitTelnetBridge != null)
                 {
-                    plugin.btb.killTelnetSessions(getName());
+                    plugin.bukkitTelnetBridge.killTelnetSessions(getName());
                 }
             }
 
-            plugin.lv.updateLogsRegistration(null, getName(), LogsRegistrationMode.DELETE);
+            plugin.logViewer.updateLogsRegistration(null, getName(), LogsRegistrationMode.DELETE);
         }
     }
 

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SplittableRandom;
 import java.util.UUID;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.shop.ShopItem;
 import me.totalfreedom.totalfreedommod.util.Groups;
 import org.bukkit.Location;
@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class Trailer extends FreedomService
+public class Trailer extends AbstractService
 {
     private final SplittableRandom random = new SplittableRandom();
     private final Set<UUID> trailPlayers = new HashSet<>(); // player UUID
@@ -44,9 +44,9 @@ public class Trailer extends FreedomService
          */
         if (trailPlayers.isEmpty()
                 || !trailPlayers.contains(event.getPlayer().getUniqueId())
-                || !plugin.pl.getData(event.getPlayer()).hasItem(ShopItem.RAINBOW_TRAIL)
-                || plugin.wr.doRestrict(event.getPlayer())
-                || !plugin.wgb.canEditCurrentWorld(event.getPlayer()))
+                || !plugin.playerList.getData(event.getPlayer()).hasItem(ShopItem.RAINBOW_TRAIL)
+                || plugin.worldRestrictions.doRestrict(event.getPlayer())
+                || !plugin.worldGuardBridge.canEditCurrentWorld(event.getPlayer()))
         {
             return;
         }
@@ -72,9 +72,9 @@ public class Trailer extends FreedomService
             {
                 final Location trail_pos;
                 trail_pos = new Location(event.getPlayer().getWorld(), fromBlock.getX() + x, fromBlock.getY(), fromBlock.getZ() + z);
-                if (trailPlayers.contains(event.getPlayer().getUniqueId()) && plugin.cpb.isEnabled())
+                if (trailPlayers.contains(event.getPlayer().getUniqueId()) && plugin.coreProtectBridge.isEnabled())
                 {
-                    plugin.cpb.getCoreProtectAPI().logPlacement(event.getPlayer().getName(), trail_pos, material, data);
+                    plugin.coreProtectBridge.getCoreProtectAPI().logPlacement(event.getPlayer().getName(), trail_pos, material, data);
                 }
             }
         }

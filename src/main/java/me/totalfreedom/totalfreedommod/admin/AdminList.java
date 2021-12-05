@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -19,7 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class AdminList extends FreedomService
+public class AdminList extends AbstractService
 {
     public static final List<String> vanished = new ArrayList<>();
     public final Map<String, List<String>> verifiedNoAdmin = Maps.newHashMap();
@@ -275,9 +275,9 @@ public class AdminList extends FreedomService
     {
         if (admin.getRank().isAtLeast(Rank.ADMIN))
         {
-            if (plugin.btb != null)
+            if (plugin.bukkitTelnetBridge != null)
             {
-                plugin.btb.killTelnetSessions(admin.getName());
+                plugin.bukkitTelnetBridge.killTelnetSessions(admin.getName());
             }
         }
 

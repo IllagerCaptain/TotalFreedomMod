@@ -1,8 +1,13 @@
 package me.totalfreedom.totalfreedommod.admin;
 
 import com.google.common.collect.Maps;
+
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
-import me.totalfreedom.totalfreedommod.FreedomService;
+
+import me.totalfreedom.totalfreedommod.player.FPlayer;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.YamlConfig;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -14,7 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class ActivityLog extends FreedomService
+public class ActivityLog extends AbstractService
 {
 
     public static final String FILENAME = "activitylog.yml";
@@ -170,23 +175,26 @@ public class ActivityLog extends FreedomService
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        if (plugin.al.isAdmin(player))
+        if (plugin.adminList.isAdmin(player))
         {
             getActivityLog(event.getPlayer()).addLogin();
-            plugin.acl.save();
-            plugin.acl.updateTables();
+            plugin.activityLog.save();
+            plugin.activityLog.updateTables();
         }
+
+        FPlayer fPlayer = plugin.playerList.getPlayer(player);
+        fPlayer.setCurrentSessionStart(new Date());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event)
     {
         Player player = event.getPlayer();
-        if (plugin.al.isAdmin(player))
+        if (plugin.adminList.isAdmin(player))
         {
             getActivityLog(event.getPlayer()).addLogout();
-            plugin.acl.save();
-            plugin.acl.updateTables();
+            plugin.activityLog.save();
+            plugin.activityLog.updateTables();
         }
     }
 

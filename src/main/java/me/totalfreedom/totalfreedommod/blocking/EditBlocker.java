@@ -1,6 +1,6 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.util.FSync;
 import org.bukkit.ChatColor;
@@ -9,7 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-public class EditBlocker extends FreedomService
+public class EditBlocker extends AbstractService
 {
     @Override
     public void onStart()
@@ -24,13 +24,13 @@ public class EditBlocker extends FreedomService
     @EventHandler(priority = EventPriority.LOW)
     public void onBlockPlace(BlockPlaceEvent event)
     {
-        FPlayer fPlayer = plugin.pl.getPlayerSync(event.getPlayer());
+        FPlayer fPlayer = plugin.playerList.getPlayerSync(event.getPlayer());
         if (!fPlayer.isEditBlocked())
         {
             return;
         }
 
-        if (plugin.al.isAdminSync(event.getPlayer()))
+        if (plugin.adminList.isAdminSync(event.getPlayer()))
         {
             fPlayer.setEditBlocked(false);
             return;
@@ -43,13 +43,13 @@ public class EditBlocker extends FreedomService
     @EventHandler(priority = EventPriority.LOW)
     public void onBlockBreak(BlockBreakEvent event)
     {
-        FPlayer fPlayer = plugin.pl.getPlayerSync(event.getPlayer());
+        FPlayer fPlayer = plugin.playerList.getPlayerSync(event.getPlayer());
         if (!fPlayer.isEditBlocked())
         {
             return;
         }
 
-        if (plugin.al.isAdminSync(event.getPlayer()))
+        if (plugin.adminList.isAdminSync(event.getPlayer()))
         {
             fPlayer.setEditBlocked(false);
             return;

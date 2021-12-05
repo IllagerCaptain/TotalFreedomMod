@@ -2,7 +2,7 @@ package me.totalfreedom.totalfreedommod.shop;
 
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-public class Votifier extends FreedomService
+public class Votifier extends AbstractService
 {
     @Override
     public void onStart()
@@ -33,18 +33,18 @@ public class Votifier extends FreedomService
         PlayerData data;
         if (player != null)
         {
-            data = plugin.pl.getData(player);
+            data = plugin.playerList.getData(player);
         }
         else
         {
-            data = plugin.pl.getData(name);
+            data = plugin.playerList.getData(name);
         }
 
         if (data != null)
         {
             data.setCoins(data.getCoins() + coinsPerVote);
             data.setTotalVotes(data.getTotalVotes() + 1);
-            plugin.pl.save(data);
+            plugin.playerList.save(data);
             FUtil.bcastMsg(ChatColor.GREEN + name + ChatColor.AQUA + " has voted for us on " + ChatColor.GREEN + vote.getServiceName() + ChatColor.AQUA + "!");
         }
 

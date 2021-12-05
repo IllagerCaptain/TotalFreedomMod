@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -28,7 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class Shop extends FreedomService
+public class Shop extends AbstractService
 {
     public final int coinsPerReactionWin = ConfigEntry.SHOP_REACTIONS_COINS_PER_WIN.getInteger();
     public final String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Reaction" + ChatColor.DARK_GRAY + "] ";
@@ -188,7 +188,7 @@ public class Shop extends FreedomService
             ItemStack icon = new ItemStack(Material.NAME_TAG);
             ItemMeta meta = icon.getItemMeta();
             assert meta != null;
-            meta.setDisplayName(FUtil.colorize(plugin.rm.craftLoginMessage(player, loginMessage)));
+            meta.setDisplayName(FUtil.colorize(plugin.rankManager.craftLoginMessage(player, loginMessage)));
             icon.setItemMeta(meta);
             gui.setItem(slot, icon);
             slot++;
@@ -350,7 +350,7 @@ public class Shop extends FreedomService
         }
 
         Player player = (Player)event.getWhoClicked();
-        PlayerData playerData = plugin.pl.getData(player);
+        PlayerData playerData = plugin.playerList.getData(player);
         int price = shopItem.getCost();
         int coins = playerData.getCoins();
 
@@ -361,7 +361,7 @@ public class Shop extends FreedomService
 
         playerData.giveItem(shopItem);
         playerData.setCoins(coins - price);
-        plugin.pl.save(playerData);
+        plugin.playerList.save(playerData);
 
         player.closeInventory();
 
@@ -391,20 +391,20 @@ public class Shop extends FreedomService
         int slot = event.getSlot();
 
         Player player = (Player)event.getWhoClicked();
-        PlayerData data = plugin.pl.getData(player);
+        PlayerData data = plugin.playerList.getData(player);
 
         if (slot == 35)
         {
             data.setLoginMessage(null);
-            plugin.pl.save(data);
+            plugin.playerList.save(data);
             player.sendMessage(ChatColor.GREEN + "Removed your login message");
         }
         else
         {
             String message = ConfigEntry.SHOP_LOGIN_MESSAGES.getStringList().get(slot);
             data.setLoginMessage(message);
-            plugin.pl.save(data);
-            player.sendMessage(ChatColor.GREEN + "Your login message is now the following:\n" + plugin.rm.craftLoginMessage(player, message));
+            plugin.playerList.save(data);
+            player.sendMessage(ChatColor.GREEN + "Your login message is now the following:\n" + plugin.rankManager.craftLoginMessage(player, message));
         }
 
         player.closeInventory();

@@ -16,7 +16,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.security.auth.login.LoginException;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
@@ -53,7 +53,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class Discord extends FreedomService
+public class Discord extends AbstractService
 {
 
     public static HashMap<String, PlayerData> LINK_CODES = new HashMap<>();
@@ -238,7 +238,7 @@ public class Discord extends FreedomService
     public void sendPteroInfo(PlayerData playerData, String username, String password)
     {
         User user = getUser(playerData.getDiscordID());
-        String message = "The following are your Pterodactyl details:\n\nUsername: " + username + "\nPassword: " + password + "\n\nYou can connect to the panel at " + plugin.ptero.URL;
+        String message = "The following are your Pterodactyl details:\n\nUsername: " + username + "\nPassword: " + password + "\n\nYou can connect to the panel at " + plugin.pterodactyl.URL;
         PrivateChannel privateChannel = user.openPrivateChannel().complete();
         privateChannel.sendMessage(message).complete();
     }
@@ -274,7 +274,7 @@ public class Discord extends FreedomService
         PrivateChannel privateChannel = user.openPrivateChannel().complete();
         privateChannel.sendMessage("Do not share these codes with anyone as they can be used to impose as you.").addFile(file).complete();
         playerData.setBackupCodes(encryptedCodes);
-        plugin.pl.save(playerData);
+        plugin.playerList.save(playerData);
         //noinspection ResultOfMethodCallIgnored
         file.delete();
         return true;
@@ -378,7 +378,7 @@ public class Discord extends FreedomService
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event)
     {
-        if (!plugin.al.isVanished(event.getPlayer().getName()))
+        if (!plugin.adminList.isVanished(event.getPlayer().getName()))
         {
             messageChatChannel("**" + event.getPlayer().getName() + " joined the server" + "**");
         }
@@ -387,7 +387,7 @@ public class Discord extends FreedomService
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLeave(PlayerQuitEvent event)
     {
-        if (!plugin.al.isVanished(event.getPlayer().getName()))
+        if (!plugin.adminList.isVanished(event.getPlayer().getName()))
         {
             messageChatChannel("**" + event.getPlayer().getName() + " left the server" + "**");
         }
@@ -518,7 +518,7 @@ public class Discord extends FreedomService
         String location = "World: " + Objects.requireNonNull(reported.getLocation().getWorld()).getName() + ", X: " + reported.getLocation().getBlockX() + ", Y: " + reported.getLocation().getBlockY() + ", Z: " + reported.getLocation().getBlockZ();
         embedBuilder.addField("Location", location, true);
         embedBuilder.addField("Game Mode", WordUtils.capitalizeFully(reported.getGameMode().name()), true);
-        com.earth2me.essentials.User user = plugin.esb.getEssentialsUser(reported.getName());
+        com.earth2me.essentials.User user = plugin.essentialsBridge.getEssentialsUser(reported.getName());
         embedBuilder.addField("God Mode", WordUtils.capitalizeFully(String.valueOf(user.isGodModeEnabled())), true);
         if (user.getNickname() != null)
         {

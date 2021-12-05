@@ -141,7 +141,7 @@
 
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <artifactId>spigot-api</artifactId>
             <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -441,6 +441,7 @@
                                     <include>org.jetbrains:annotations</include>
                                 </includes>
                             </artifactSet>
+                            <outputDirectory>E:\A Folder for More Folders\Minecraft Servers\TotalFreedom Testing\plugins</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

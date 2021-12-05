@@ -1,28 +1,26 @@
 package me.totalfreedom.totalfreedommod.bridge;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import java.util.Map;
 
 import com.sk89q.worldguard.protection.regions.RegionQuery;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class WorldGuardBridge extends FreedomService
+public class WorldGuardBridge extends AbstractService
 {
     @Override
     public void onStart()
     {
-        plugin.wr.protectWorld(plugin.wm.masterBuilderWorld.getWorld());
+        plugin.worldRestrictions.protectWorld(plugin.worldManager.masterBuilderWorld.getWorld());
     }
 
     @Override

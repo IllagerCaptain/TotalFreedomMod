@@ -3,7 +3,7 @@ package me.totalfreedom.totalfreedommod.fun;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
-public class Landminer extends FreedomService
+public class Landminer extends AbstractService
 {
     private final List<Landmine> landmines = new ArrayList<>();
 

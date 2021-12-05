@@ -63,7 +63,7 @@ public class FSync
             @Override
             public void run()
             {
-                plugin.cm.adminChat(sender, message);
+                plugin.chatManager.adminChat(sender, message);
             }
 
         }.runTask(plugin);
@@ -78,7 +78,7 @@ public class FSync
             @Override
             public void run()
             {
-                plugin.ae.autoEject(player, kickMessage);
+                plugin.autoEject.autoEject(player, kickMessage);
             }
 
         }.runTask(plugin);

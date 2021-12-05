@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class WorldRestrictions extends FreedomService
+public class WorldRestrictions extends AbstractService
 {
 
     private final List<String> BLOCKED_WORLDEDIT_COMMANDS = Arrays.asList(
@@ -32,8 +32,7 @@ public class WorldRestrictions extends FreedomService
     private final List<String> BLOCKED_ESSENTIALS_COMMANDS = Arrays.asList(
             "bigtree", "ebigtree", "largetree", "elargetree");
 
-    private final Map<Flag<?>, Object> flags = new HashMap<Flag<?>, Object>()
-    {{
+    private final Map<Flag<?>, Object> flags = new HashMap<>() {{
         put(Flags.PLACE_VEHICLE, StateFlag.State.DENY);
         put(Flags.DESTROY_VEHICLE, StateFlag.State.DENY);
         put(Flags.ENTITY_ITEM_FRAME_DESTROY, StateFlag.State.DENY);
@@ -52,15 +51,18 @@ public class WorldRestrictions extends FreedomService
 
     public boolean doRestrict(Player player)
     {
-        if (!plugin.pl.getData(player).isMasterBuilder() && plugin.pl.canManageMasterBuilders(player.getName()))
+        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("WorldGuard"))
+            return false;
+
+        if (!plugin.playerList.getData(player).isMasterBuilder() && plugin.playerList.canManageMasterBuilders(player.getName()))
         {
-            if (player.getWorld().equals(plugin.wm.masterBuilderWorld.getWorld()))
+            if (player.getWorld().equals(plugin.worldManager.masterBuilderWorld.getWorld()))
             {
                 return true;
             }
         }
 
-        return !plugin.al.isAdmin(player) && player.getWorld().equals(plugin.wm.adminworld.getWorld());
+        return !plugin.adminList.isAdmin(player) && player.getWorld().equals(plugin.worldManager.adminworld.getWorld());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -131,7 +133,7 @@ public class WorldRestrictions extends FreedomService
         {
             /* This is a very poor way of blocking WorldEdit commands, all the methods I know of
                for obtaining a list of a plugin's commands are returning null for world edit. */
-            String allowed = player.getWorld().equals(plugin.wm.adminworld.getWorld()) ? "Admins" : "Master Builders";
+            String allowed = player.getWorld().equals(plugin.worldManager.adminworld.getWorld()) ? "Admins" : "Master Builders";
 
             if (command.startsWith("/") || BLOCKED_WORLDEDIT_COMMANDS.contains(command))
             {
@@ -158,12 +160,12 @@ public class WorldRestrictions extends FreedomService
 
     public void protectWorld(World world)
     {
-        if (!plugin.wgb.isEnabled())
+        if (!plugin.worldGuardBridge.isEnabled())
         {
             return;
         }
 
-        RegionManager regionManager = plugin.wgb.getRegionManager(world);
+        RegionManager regionManager = plugin.worldGuardBridge.getRegionManager(world);
 
         GlobalProtectedRegion region = new GlobalProtectedRegion("__global__");
 

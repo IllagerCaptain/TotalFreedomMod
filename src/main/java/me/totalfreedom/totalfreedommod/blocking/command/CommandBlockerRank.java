@@ -22,7 +22,7 @@ public enum CommandBlockerRank
 
     public static CommandBlockerRank fromSender(CommandSender sender)
     {
-        Admin admin = TotalFreedomMod.getPlugin().al.getAdmin(sender);
+        Admin admin = TotalFreedomMod.getPlugin().adminList.getAdmin(sender);
         if (admin != null)
         {
             if (admin.getRank() == Rank.SENIOR_ADMIN)

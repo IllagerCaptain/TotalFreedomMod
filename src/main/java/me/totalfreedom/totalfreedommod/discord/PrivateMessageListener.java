@@ -24,13 +24,13 @@ public class PrivateMessageListener extends ListenerAdapter
                     player.setDiscordID(event.getMessage().getAuthor().getId());
                     player.setVerification(true);
 
-                    Admin admin = TotalFreedomMod.getPlugin().al.getEntryByName(name);
+                    Admin admin = TotalFreedomMod.getPlugin().adminList.getEntryByName(name);
                     if (admin != null)
                     {
                         Discord.syncRoles(admin, player.getDiscordID());
                     }
 
-                    TotalFreedomMod.getPlugin().pl.save(player);
+                    TotalFreedomMod.getPlugin().playerList.save(player);
                     Discord.LINK_CODES.remove(code);
                 }
                 else

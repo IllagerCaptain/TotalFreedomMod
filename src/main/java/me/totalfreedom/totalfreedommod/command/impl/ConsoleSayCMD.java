@@ -1,0 +1,30 @@
+package me.totalfreedom.totalfreedommod.command.impl;
+
+import me.totalfreedom.totalfreedommod.command.input.CommandParameters;
+import me.totalfreedom.totalfreedommod.command.input.CommandPermissions;
+import me.totalfreedom.totalfreedommod.command.FreedomCommand;
+import me.totalfreedom.totalfreedommod.command.input.SourceType;
+import me.totalfreedom.totalfreedommod.rank.Rank;
+import me.totalfreedom.totalfreedommod.util.FUtil;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+@CommandPermissions(level = Rank.ADMIN, source = SourceType.ONLY_CONSOLE)
+@CommandParameters(name = "consolesay", description = "Telnet/Console command - Send a chat message with chat formatting over telnet.", usage = "/<command> <message>", aliases = "csay")
+public class ConsoleSayCMD extends FreedomCommand {
+
+    @Override
+    public boolean run(CommandSender sender, Player playerSender, Command cmd, String commandLabel, String[] args, boolean senderIsConsole) {
+        if (args.length == 0) {
+            return false;
+        }
+
+        String message = StringUtils.join(args, " ");
+        FUtil.bcastMsg(String.format("§7[CONSOLE] §c%s §8\u00BB §f%s", sender.getName(), StringUtils.join(args, " ")));
+        plugin.discord.messageChatChannel("[CONSOLE] " + sender.getName() + " \u00BB " + ChatColor.stripColor(message));
+        return true;
+    }
+}

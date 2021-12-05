@@ -11,6 +11,7 @@ import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.command.FreedomCommand;
 import me.totalfreedom.totalfreedommod.httpd.NanoHTTPD;
 import me.totalfreedom.totalfreedommod.rank.Displayable;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -18,7 +19,6 @@ import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.SimpleCommandMap;
 import static me.totalfreedom.totalfreedommod.httpd.HTMLGenerationTools.heading;
 import static me.totalfreedom.totalfreedommod.httpd.HTMLGenerationTools.paragraph;
-import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
 public class Module_help extends HTTPDModule
 {
@@ -34,19 +34,19 @@ public class Module_help extends HTTPDModule
 
         sb.append(
                 "<li><span class=\"commandName\">{$CMD_NAME}</span> - Usage: <span class=\"commandUsage\">{$CMD_USAGE}</span>"
-                        .replace("{$CMD_NAME}", escapeHtml4(command.getName().trim()))
-                        .replace("{$CMD_USAGE}", escapeHtml4(command.getUsage().trim())));
+                        .replace("{$CMD_NAME}", StringEscapeUtils.escapeHtml(command.getName().trim()))
+                        .replace("{$CMD_USAGE}", StringEscapeUtils.escapeHtml(command.getUsage().trim())));
 
         if (!command.getAliases().isEmpty())
         {
             sb.append(
                     " - Aliases: <span class=\"commandAliases\">{$CMD_ALIASES}</span>"
-                            .replace("{$CMD_ALIASES}", escapeHtml4(StringUtils.join(command.getAliases(), ", "))));
+                            .replace("{$CMD_ALIASES}", StringEscapeUtils.escapeHtml(StringUtils.join(command.getAliases(), ", "))));
         }
 
         sb.append(
                 "<br><span class=\"commandDescription\">{$CMD_DESC}</span></li>\r\n"
-                        .replace("{$CMD_DESC}", escapeHtml4(command.getDescription().trim())));
+                        .replace("{$CMD_DESC}", StringEscapeUtils.escapeHtml(command.getDescription().trim())));
 
         return sb.toString();
     }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SplittableRandom;
 import java.util.UUID;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
@@ -45,7 +45,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class ItemFun extends FreedomService
+public class ItemFun extends AbstractService
 {
 
     private final SplittableRandom random = new SplittableRandom();
@@ -101,11 +101,11 @@ public class ItemFun extends FreedomService
 
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
-        FPlayer fPlayer = plugin.pl.getPlayer(player);
+        FPlayer fPlayer = plugin.playerList.getPlayer(player);
 
         if (player.getInventory().getItemInMainHand().getType().equals(Material.POTATO) || entity.getType().equals(EntityType.PLAYER))
         {
-            if (plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.STACKING_POTATO, player.getInventory(), plugin.sh.getStackingPotato()))
+            if (plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.STACKING_POTATO, player.getInventory(), plugin.shop.getStackingPotato()))
             {
                 if (entity instanceof Player)
                 {
@@ -155,7 +155,7 @@ public class ItemFun extends FreedomService
             return;
         }
 
-        if (!plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.STACKING_POTATO, player.getInventory(), plugin.sh.getStackingPotato()))
+        if (!plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.STACKING_POTATO, player.getInventory(), plugin.shop.getStackingPotato()))
         {
             return;
         }
@@ -174,7 +174,7 @@ public class ItemFun extends FreedomService
         }
 
         final Player player = event.getPlayer();
-        final FPlayer fPlayer = plugin.pl.getPlayer(player);
+        final FPlayer fPlayer = plugin.playerList.getPlayer(player);
 
         switch (event.getMaterial())
         {
@@ -200,7 +200,7 @@ public class ItemFun extends FreedomService
 
             case BLAZE_ROD:
             {
-                if (!plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.LIGHTNING_ROD, player.getInventory(), plugin.sh.getLightningRod()))
+                if (!plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.LIGHTNING_ROD, player.getInventory(), plugin.shop.getLightningRod()))
                 {
                     break;
                 }
@@ -224,7 +224,7 @@ public class ItemFun extends FreedomService
 
             case FIRE_CHARGE:
             {
-                if (!plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.FIRE_BALL, player.getInventory(), plugin.sh.getFireBall()))
+                if (!plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.FIRE_BALL, player.getInventory(), plugin.shop.getFireBall()))
                 {
                     break;
                 }
@@ -248,13 +248,13 @@ public class ItemFun extends FreedomService
                 final int RADIUS_HIT = 5;
                 final int STRENGTH = 4;
                 
-                if (plugin.lp.CLOWNFISH_TOGGLE.contains(player.getName()))
+                if (plugin.loginProcess.CLOWNFISH_TOGGLE.contains(player.getName()))
                 {
                     player.sendMessage(ChatColor.GRAY + "An admin has disabled your ability to use clownfish.");
                     break;
                 }
 
-                if (!plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.CLOWN_FISH, player.getInventory(), plugin.sh.getClownFish()))
+                if (!plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.CLOWN_FISH, player.getInventory(), plugin.shop.getClownFish()))
                 {
                     break;
                 }
@@ -319,7 +319,7 @@ public class ItemFun extends FreedomService
         if (entity instanceof EnderPearl && entity.getShooter() instanceof Player)
         {
             Player player = (Player)entity.getShooter();
-            if (plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.RIDEABLE_PEARL, player.getInventory(), plugin.sh.getRideablePearl()))
+            if (plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.RIDEABLE_PEARL, player.getInventory(), plugin.shop.getRideablePearl()))
             {
                 entity.addPassenger(player);
             }
@@ -377,10 +377,10 @@ public class ItemFun extends FreedomService
     public void onFish(PlayerFishEvent event)
     {
         Player player = event.getPlayer();
-        PlayerData data = plugin.pl.getData(player);
+        PlayerData data = plugin.playerList.getData(player);
         PlayerInventory inv = event.getPlayer().getInventory();
         ItemStack rod = inv.getItemInMainHand();
-        if (plugin.sh.isRealItem(plugin.pl.getData(player), ShopItem.GRAPPLING_HOOK, player.getInventory(), plugin.sh.getGrapplingHook()))
+        if (plugin.shop.isRealItem(plugin.playerList.getData(player), ShopItem.GRAPPLING_HOOK, player.getInventory(), plugin.shop.getGrapplingHook()))
         {
             if (event.getState() == PlayerFishEvent.State.REEL_IN || event.getState() == PlayerFishEvent.State.IN_GROUND)
             {

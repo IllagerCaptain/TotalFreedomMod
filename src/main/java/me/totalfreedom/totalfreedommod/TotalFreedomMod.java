@@ -1,12 +1,18 @@
 package me.totalfreedom.totalfreedommod;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import me.totalfreedom.totalfreedommod.admin.ActivityLog;
 import me.totalfreedom.totalfreedommod.admin.AdminList;
-import me.totalfreedom.totalfreedommod.banning.BanManager;
-import me.totalfreedom.totalfreedommod.banning.IndefiniteBanList;
+import me.totalfreedom.totalfreedommod.admin.module.CommandSpy;
+import me.totalfreedom.totalfreedommod.admin.module.Fuckoff;
+import me.totalfreedom.totalfreedommod.admin.module.Muter;
+import me.totalfreedom.totalfreedommod.admin.module.Orbiter;
+import me.totalfreedom.totalfreedommod.anticheat.AutoEject;
+import me.totalfreedom.totalfreedommod.punishments.banning.BanManager;
+import me.totalfreedom.totalfreedommod.punishments.banning.IndefiniteBanList;
 import me.totalfreedom.totalfreedommod.blocking.BlockBlocker;
 import me.totalfreedom.totalfreedommod.blocking.EditBlocker;
 import me.totalfreedom.totalfreedommod.blocking.EventBlocker;
@@ -23,38 +29,43 @@ import me.totalfreedom.totalfreedommod.bridge.LibsDisguisesBridge;
 import me.totalfreedom.totalfreedommod.bridge.TFGuildsBridge;
 import me.totalfreedom.totalfreedommod.bridge.WorldEditBridge;
 import me.totalfreedom.totalfreedommod.bridge.WorldGuardBridge;
-import me.totalfreedom.totalfreedommod.caging.Cager;
+import me.totalfreedom.totalfreedommod.punishments.caging.Cager;
 import me.totalfreedom.totalfreedommod.command.CommandLoader;
 import me.totalfreedom.totalfreedommod.config.MainConfig;
 import me.totalfreedom.totalfreedommod.discord.Discord;
-import me.totalfreedom.totalfreedommod.freeze.Freezer;
+import me.totalfreedom.totalfreedommod.punishments.freeze.Freezer;
 import me.totalfreedom.totalfreedommod.fun.ItemFun;
 import me.totalfreedom.totalfreedommod.fun.Jumppads;
 import me.totalfreedom.totalfreedommod.fun.Landminer;
 import me.totalfreedom.totalfreedommod.fun.MP44;
 import me.totalfreedom.totalfreedommod.fun.Trailer;
 import me.totalfreedom.totalfreedommod.httpd.HTTPDaemon;
-import me.totalfreedom.totalfreedommod.permissions.PermissionConfig;
-import me.totalfreedom.totalfreedommod.permissions.PermissionManager;
+import me.totalfreedom.totalfreedommod.anticheat.AntiNuke;
+import me.totalfreedom.totalfreedommod.anticheat.AntiSpam;
+import me.totalfreedom.totalfreedommod.anticheat.AutoKick;
+import me.totalfreedom.totalfreedommod.player.permissions.PermissionConfig;
+import me.totalfreedom.totalfreedommod.player.permissions.PermissionManager;
 import me.totalfreedom.totalfreedommod.player.PlayerList;
 import me.totalfreedom.totalfreedommod.punishments.PunishmentList;
 import me.totalfreedom.totalfreedommod.rank.RankManager;
+import me.totalfreedom.totalfreedommod.services.ServiceHandler;
+import me.totalfreedom.totalfreedommod.services.impl.*;
 import me.totalfreedom.totalfreedommod.shop.Shop;
 import me.totalfreedom.totalfreedommod.shop.Votifier;
 import me.totalfreedom.totalfreedommod.sql.SQLite;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import me.totalfreedom.totalfreedommod.util.MethodTimer;
-import me.totalfreedom.totalfreedommod.world.CleanroomChunkGenerator;
+import me.totalfreedom.totalfreedommod.world.generator.CleanroomChunkGenerator;
 import me.totalfreedom.totalfreedommod.world.WorldManager;
 import me.totalfreedom.totalfreedommod.world.WorldRestrictions;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.spigotmc.SpigotConfig;
 
 public class TotalFreedomMod extends JavaPlugin
 {
@@ -65,76 +76,80 @@ public class TotalFreedomMod extends JavaPlugin
     public static String pluginName;
     public static String pluginVersion;
     private static TotalFreedomMod plugin;
+
+    private File spigotFile;
+    private YamlConfiguration spigotConfig;
+
     //
     public MainConfig config;
     public PermissionConfig permissions;
     //
     // Service Handler
-    public FreedomServiceHandler fsh;
+    public ServiceHandler serviceHandler;
     // Command Loader
-    public CommandLoader cl;
+    public CommandLoader commandLoader;
     // Services
-    public ServerInterface si;
-    public WorldManager wm;
-    public LogViewer lv;
-    public AdminList al;
-    public ActivityLog acl;
-    public RankManager rm;
-    public CommandBlocker cb;
-    public EventBlocker eb;
-    public BlockBlocker bb;
-    public MobBlocker mb;
-    public InteractBlocker ib;
-    public PotionBlocker pb;
-    public LoginProcess lp;
-    public AntiNuke nu;
-    public AntiSpam as;
-    public PlayerList pl;
-    public Shop sh;
-    public Votifier vo;
+    public ServerInterface serverInterface;
+    public WorldManager worldManager;
+    public LogViewer logViewer;
+    public AdminList adminList;
+    public ActivityLog activityLog;
+    public RankManager rankManager;
+    public CommandBlocker commandBlocker;
+    public EventBlocker eventBlocker;
+    public BlockBlocker blockBlocker;
+    public MobBlocker mobBlocker;
+    public InteractBlocker interactBlocker;
+    public PotionBlocker potionBlocker;
+    public LoginProcess loginProcess;
+    public AntiNuke antiNuke;
+    public AntiSpam antiSpam;
+    public PlayerList playerList;
+    public Shop shop;
+    public Votifier votifier;
     public SQLite sql;
-    public Announcer an;
-    public ChatManager cm;
-    public Discord dc;
-    public PunishmentList pul;
-    public BanManager bm;
-    public IndefiniteBanList im;
-    public PermissionManager pem;
-    public GameRuleHandler gr;
-    public CommandSpy cs;
-    public Cager ca;
-    public Freezer fm;
-    public EditBlocker ebl;
-    public PVPBlocker pbl;
-    public Orbiter or;
-    public Muter mu;
-    public Fuckoff fo;
-    public AutoKick ak;
-    public AutoEject ae;
-    public Monitors mo;
-    public MovementValidator mv;
-    public ServerPing sp;
-    public ItemFun it;
-    public Landminer lm;
-    public MP44 mp;
-    public Jumppads jp;
-    public Trailer tr;
-    public HTTPDaemon hd;
-    public WorldRestrictions wr;
-    public SignBlocker snp;
-    public EntityWiper ew;
-    public Sitter st;
-    public VanishHandler vh;
-    public Pterodactyl ptero;
+    public Announcer announcer;
+    public ChatHandler chatManager;
+    public Discord discord;
+    public PunishmentList punishmentList;
+    public BanManager banManager;
+    public IndefiniteBanList indefiniteBanList;
+    public PermissionManager permissionManager;
+    public GameRuleHandler gameRuleHandler;
+    public CommandSpy commandSpy;
+    public Cager cager;
+    public Freezer freezer;
+    public EditBlocker editBlocker;
+    public PVPBlocker pvpBlocker;
+    public Orbiter orbiter;
+    public Muter muter;
+    public Fuckoff fuckoff;
+    public AutoKick autoKick;
+    public AutoEject autoEject;
+    public Monitors monitors;
+    public MovementValidator movementValidator;
+    public ServerPing serverPing;
+    public ItemFun itemFun;
+    public Landminer landMiner;
+    public MP44 mp44;
+    public Jumppads jumpPads;
+    public Trailer trailer;
+    public HTTPDaemon httpDaemon;
+    public WorldRestrictions worldRestrictions;
+    public SignBlocker signBlocker;
+    public EntityWiper entityWiper;
+    public Sitter sitter;
+    public VanishHandler vanishHandler;
+    public Pterodactyl pterodactyl;
     //
     // Bridges
-    public BukkitTelnetBridge btb;
-    public EssentialsBridge esb;
-    public LibsDisguisesBridge ldb;
-    public CoreProtectBridge cpb;
-    public TFGuildsBridge tfg;
-    public WorldEditBridge web;
-    public WorldGuardBridge wgb;
+    public BukkitTelnetBridge bukkitTelnetBridge;
+    public EssentialsBridge essentialsBridge;
+    public LibsDisguisesBridge libsDisguisesBridge;
+    public CoreProtectBridge coreProtectBridge;
+    public TFGuildsBridge tfGuildsBridge;
+    public WorldEditBridge worldEditBridge;
+    public WorldGuardBridge worldGuardBridge;
 
     public static TotalFreedomMod getPlugin()
     {
@@ -177,13 +192,13 @@ public class TotalFreedomMod extends JavaPlugin
         timer.start();
 
         // Warn if we're running on a wrong version
-        ServerInterface.warnVersion();
+        //ServerInterface.warnVersion();no more nms
 
         // Delete unused files
         FUtil.deleteCoreDumps();
         FUtil.deleteFolder(new File("./_deleteme"));
 
-        fsh = new FreedomServiceHandler();
+        serviceHandler = new ServiceHandler();
 
         config = new MainConfig();
         config.load();
@@ -193,39 +208,53 @@ public class TotalFreedomMod extends JavaPlugin
             FLog.debug("Developer mode enabled.");
         }
 
-        cl = new CommandLoader();
-        cl.loadCommands();
+        commandLoader = new CommandLoader();
+        commandLoader.loadCommands();
 
-        BackupManager backups = new BackupManager();
+        BackupHandler backups = new BackupHandler();
         backups.createAllBackups();
 
         permissions = new PermissionConfig();
         permissions.load();
 
-        mv = new MovementValidator();
-        sp = new ServerPing();
+        movementValidator = new MovementValidator();
+        serverPing = new ServerPing();
 
         new Initializer();
 
-        fsh.startServices();
+        serviceHandler.startServices();
 
-        FLog.info("Started " + fsh.getServiceAmount() + " services.");
+        FLog.info("Started " + serviceHandler.getServiceAmount() + " services.");
 
         timer.update();
-        FLog.info("Version " + pluginVersion + " for " + ServerInterface.COMPILE_NMS_VERSION + " enabled in " + timer.getTotal() + "ms");
+        FLog.info("Version " + pluginVersion + " for " + getServer().getBukkitVersion() + " enabled in " + timer.getTotal() + "ms");
 
         // Metrics @ https://bstats.org/plugin/bukkit/TotalFreedomMod/2966
         new Metrics(this, 2966);
 
         // little workaround to stop spigot from autorestarting - causing AMP to detach from process.
-        SpigotConfig.config.set("settings.restart-on-crash", false);
+        //SpigotConfig.config.set("settings.restart-on-crash", false);
+
+
+        this.spigotFile = new File(getServer().getWorldContainer(), "spigot.yml");
+        this.spigotConfig = YamlConfiguration.loadConfiguration(this.spigotFile);
+
+        this.spigotConfig.set("settings.restart-on-crash", false);
+        try {
+            this.spigotConfig.save(this.spigotFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Possibly could make it so after reloads, players regain their tag
+        Bukkit.getOnlinePlayers().forEach(player -> this.rankManager.updateDisplay(player));
     }
 
     @Override
     public void onDisable()
     {
         // Stop services and bridges
-        fsh.stopServices();
+        serviceHandler.stopServices();
 
         getServer().getScheduler().cancelTasks(plugin);
 
@@ -297,83 +326,100 @@ public class TotalFreedomMod extends JavaPlugin
         private void initServices()
         {
             // Start services
-            si = new ServerInterface();
-            wm = new WorldManager();
-            lv = new LogViewer();
+            serverInterface = new ServerInterface();
+            gameRuleHandler = new GameRuleHandler();
+            worldManager = new WorldManager();
+            logViewer = new LogViewer();
             sql = new SQLite();
-            al = new AdminList();
-            acl = new ActivityLog();
-            rm = new RankManager();
-            cb = new CommandBlocker();
-            eb = new EventBlocker();
-            bb = new BlockBlocker();
-            mb = new MobBlocker();
-            ib = new InteractBlocker();
-            pb = new PotionBlocker();
-            lp = new LoginProcess();
-            nu = new AntiNuke();
-            as = new AntiSpam();
-            wr = new WorldRestrictions();
-            pl = new PlayerList();
-            sh = new Shop();
-            vo = new Votifier();
-            an = new Announcer();
-            cm = new ChatManager();
-            dc = new Discord();
-            pul = new PunishmentList();
-            bm = new BanManager();
-            im = new IndefiniteBanList();
-            pem = new PermissionManager();
-            gr = new GameRuleHandler();
-            snp = new SignBlocker();
-            ew = new EntityWiper();
-            st = new Sitter();
-            vh = new VanishHandler();
-            ptero = new Pterodactyl();
+            adminList = new AdminList();
+            activityLog = new ActivityLog();
+            rankManager = new RankManager();
+            commandBlocker = new CommandBlocker();
+            eventBlocker = new EventBlocker();
+            blockBlocker = new BlockBlocker();
+            mobBlocker = new MobBlocker();
+            interactBlocker = new InteractBlocker();
+            potionBlocker = new PotionBlocker();
+            loginProcess = new LoginProcess();
+            antiNuke = new AntiNuke();
+            antiSpam = new AntiSpam();
+            playerList = new PlayerList();
+            shop = new Shop();
+            votifier = new Votifier();
+            announcer = new Announcer();
+            chatManager = new ChatHandler();
+            discord = new Discord();
+            punishmentList = new PunishmentList();
+            banManager = new BanManager();
+            indefiniteBanList = new IndefiniteBanList();
+            permissionManager = new PermissionManager();
+            signBlocker = new SignBlocker();
+            entityWiper = new EntityWiper();
+            sitter = new Sitter();
+            vanishHandler = new VanishHandler();
+            pterodactyl = new Pterodactyl();
+
+            if (isPluginPresent("WorldGuard"))
+                worldRestrictions = new WorldRestrictions();
         }
 
         private void initAdminUtils()
         {
             // Single admin utils
-            cs = new CommandSpy();
-            ca = new Cager();
-            fm = new Freezer();
-            or = new Orbiter();
-            mu = new Muter();
-            ebl = new EditBlocker();
-            pbl = new PVPBlocker();
-            fo = new Fuckoff();
-            ak = new AutoKick();
-            ae = new AutoEject();
-            mo = new Monitors();
+            commandSpy = new CommandSpy();
+            cager = new Cager();
+            freezer = new Freezer();
+            orbiter = new Orbiter();
+            muter = new Muter();
+            editBlocker = new EditBlocker();
+            pvpBlocker = new PVPBlocker();
+            fuckoff = new Fuckoff();
+            autoKick = new AutoKick();
+            autoEject = new AutoEject();
+            monitors = new Monitors();
         }
 
         private void initBridges()
         {
             // Start bridges
-            btb = new BukkitTelnetBridge();
-            cpb = new CoreProtectBridge();
-            esb = new EssentialsBridge();
-            ldb = new LibsDisguisesBridge();
-            tfg = new TFGuildsBridge();
-            web = new WorldEditBridge();
-            wgb = new WorldGuardBridge();
+            if (isPluginPresent("BukkitTelnet"))
+                bukkitTelnetBridge = new BukkitTelnetBridge();
+            if (isPluginPresent("CoreProtect"))
+                coreProtectBridge = new CoreProtectBridge();
+            if (isPluginPresent("WorldGuard"))
+                worldGuardBridge = new WorldGuardBridge();
+            if (isPluginPresent("WorldEdit"))
+                worldEditBridge = new WorldEditBridge();
+
+            essentialsBridge = new EssentialsBridge();
+            libsDisguisesBridge = new LibsDisguisesBridge();
+            tfGuildsBridge = new TFGuildsBridge();
+
         }
 
         private void initFun()
         {
             // Fun
-            it = new ItemFun();
-            lm = new Landminer();
-            mp = new MP44();
-            jp = new Jumppads();
-            tr = new Trailer();
+            itemFun = new ItemFun();
+            landMiner = new Landminer();
+            mp44 = new MP44();
+            jumpPads = new Jumppads();
+            trailer = new Trailer();
         }
 
         private void initHTTPD()
         {
             // HTTPD
-            hd = new HTTPDaemon();
+            httpDaemon = new HTTPDaemon();
         }
+
+        private boolean isPluginPresent(String plugin)
+        {
+            return TotalFreedomMod.getPlugin().getServer().getPluginManager().isPluginEnabled(plugin);
+        }
+    }
+
+    public YamlConfiguration getSpigotConfig() {
+        return spigotConfig;
     }
 }

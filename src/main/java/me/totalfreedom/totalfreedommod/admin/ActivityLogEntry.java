@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+
+import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.config.IConfig;
+import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,15 +17,20 @@ public class ActivityLogEntry implements IConfig
 {
 
     public static final String FILENAME = "activitylog.yml";
+
     private final List<String> ips = Lists.newArrayList();
     private final List<String> timestamps = Lists.newArrayList();
     private final List<String> durations = Lists.newArrayList();
+
+    private Player player;
     private String configKey;
     private String name;
 
     public ActivityLogEntry(Player player)
     {
-        this.configKey = player.getName().toLowerCase();
+        this(player.getName().toLowerCase());
+
+        this.player = player;
         this.name = player.getName();
     }
 
@@ -73,14 +81,22 @@ public class ActivityLogEntry implements IConfig
     public void addLogout()
     {
         // Fix of Array index out of bonds issue: FS-131
-        String lastLoginString;
+        String lastLoginString = null;
+
         if(timestamps.size() > 1)
         {
             lastLoginString = timestamps.get(timestamps.size() - 1);
-        }else
+        }
+        else if (!timestamps.isEmpty())
         {
             lastLoginString = timestamps.get(0);
         }
+        if (lastLoginString == null)
+        {
+            FPlayer fPlayer = TotalFreedomMod.getPlugin().playerList.getPlayer(this.player);
+            lastLoginString = "Login: " + FUtil.dateToString(fPlayer.getCurrentSessionStart());
+        }
+
         Date currentTime = Date.from(Instant.now());
         timestamps.add("Logout: " + FUtil.dateToString(currentTime));
         lastLoginString = lastLoginString.replace("Login: ", "");

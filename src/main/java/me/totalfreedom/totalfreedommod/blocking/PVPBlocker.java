@@ -1,6 +1,6 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Arrow;
@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class PVPBlocker extends FreedomService
+public class PVPBlocker extends AbstractService
 {
     @Override
     public void onStart()
@@ -70,24 +70,24 @@ public class PVPBlocker extends FreedomService
             }
         }
 
-        if (player != null & !plugin.al.isAdmin(player))
+        if (player != null & !plugin.adminList.isAdmin(player))
         {
             if (player.getGameMode() == GameMode.CREATIVE)
             {
                 player.sendMessage(ChatColor.RED + "Creative PvP is not allowed!");
                 event.setCancelled(true);
             }
-            else if (plugin.esb.getEssentialsUser(player.getName()).isGodModeEnabled())
+            else if (plugin.essentialsBridge.getEssentialsUser(player.getName()).isGodModeEnabled())
             {
                 player.sendMessage(ChatColor.RED + "God mode PvP is not allowed!");
                 event.setCancelled(true);
             }
-            else if (plugin.pl.getPlayer(target).isPvpBlocked())
+            else if (plugin.playerList.getPlayer(target).isPvpBlocked())
             {
                 player.sendMessage(ChatColor.RED + target.getName() + " has PvP disabled!");
                 event.setCancelled(true);
             }
-            else if (plugin.pl.getPlayer(player).isPvpBlocked())
+            else if (plugin.playerList.getPlayer(player).isPvpBlocked())
             {
                 player.sendMessage(ChatColor.RED + "You have PvP disabled!");
                 event.setCancelled(true);

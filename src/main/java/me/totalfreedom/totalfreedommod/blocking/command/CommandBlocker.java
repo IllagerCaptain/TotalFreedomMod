@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -22,7 +22,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.SimplePluginManager;
 
-public class CommandBlocker extends FreedomService
+public class CommandBlocker extends AbstractService
 {
 
     private final Pattern flagPattern = Pattern.compile("(:([0-9]){5,})");
@@ -171,7 +171,7 @@ public class CommandBlocker extends FreedomService
 
         for (String part : commandParts)
         {
-            if (command.startsWith("/") && !plugin.al.isAdmin(sender) && (part.contains("#copy") || part.contains("#clipboard")))
+            if (command.startsWith("/") && !plugin.adminList.isAdmin(sender) && (part.contains("#copy") || part.contains("#clipboard")))
             {
                 FUtil.playerMsg(sender, "WorldEdit copy variables are disabled.");
                 return true;

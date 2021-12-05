@@ -5,12 +5,8 @@ import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.spigotmc.SpigotConfig;
-
 public class CommandBlockerEntry
 {
-
-
     private final CommandBlockerRank rank;
 
     private final CommandBlockerAction action;
@@ -39,13 +35,14 @@ public class CommandBlockerEntry
     {
         if (action == CommandBlockerAction.BLOCK_AND_EJECT && sender instanceof Player)
         {
-            TotalFreedomMod.getPlugin().ae.autoEject((Player)sender, "You used a prohibited command: " + command);
+            TotalFreedomMod.getPlugin().autoEject.autoEject((Player)sender, "You used a prohibited command: " + command);
             FUtil.bcastMsg(sender.getName() + " was automatically kicked for using harmful commands.", ChatColor.RED);
             return;
         }
         if (action == CommandBlockerAction.BLOCK_UNKNOWN)
         {
-            sender.sendMessage(SpigotConfig.unknownCommandMessage);
+            String spigotUnknownCMD = TotalFreedomMod.getPlugin().getSpigotConfig().getString("messages.unknown-command");
+            sender.sendMessage(spigotUnknownCMD == null || spigotUnknownCMD.isEmpty() ? "Unknown command. Type \"/help\" for help." : spigotUnknownCMD);
             return;
         }
         FUtil.playerMsg(sender, FUtil.colorize(message));

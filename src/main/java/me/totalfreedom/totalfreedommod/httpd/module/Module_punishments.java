@@ -41,7 +41,7 @@ public class Module_punishments extends HTTPDModule
 
     private boolean isAuthorized(String remoteAddress)
     {
-        Admin entry = plugin.al.getEntryByIp(remoteAddress);
+        Admin entry = plugin.adminList.getEntryByIp(remoteAddress);
         return entry != null && entry.isActive();
     }
 }

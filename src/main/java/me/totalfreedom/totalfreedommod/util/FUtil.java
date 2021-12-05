@@ -55,9 +55,10 @@ public class FUtil
             "ba5aafba-9012-418f-9819-a7020d591068",  // TFTWPhoenix
             "d6dd9740-40db-45f5-ab16-4ee16a633009", // Abhi
             "2e06e049-24c8-42e4-8bcf-d35372af31e6", // NotInSync
-            "f97c0d7b-6413-4558-a409-88f09a8f9adb" // videogamesm12
+            "f97c0d7b-6413-4558-a409-88f09a8f9adb", // videogamesm12
+            "f5cd54c4-3a24-4213-9a56-c06c49594dff" // Taah
     );
-    public static final List<String> DEVELOPER_NAMES = Arrays.asList("Madgeek1450", "Prozza", "WickedGamingUK", "Wild1145", "aggelosQQ", "scripthead", "CoolJWB", "elmon_", "speednt", "SupItsDillon", "Paldiu", "TFTWPhoenix", "abhithedev", "NotInSync", "videogamesm12");
+    public static final List<String> DEVELOPER_NAMES = Arrays.asList("Madgeek1450", "Prozza", "WickedGamingUK", "Wild1145", "aggelosQQ", "scripthead", "CoolJWB", "elmon_", "speednt", "SupItsDillon", "Paldiu", "TFTWPhoenix", "abhithedev", "NotInSync", "videogamesm12", "Taahh");
     public static final Map<String, ChatColor> CHAT_COLOR_NAMES = new HashMap<>();
     public static final List<ChatColor> CHAT_COLOR_POOL = Arrays.asList(
             ChatColor.DARK_RED,
@@ -156,7 +157,7 @@ public class FUtil
         List<String> names = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers())
         {
-            if (!TotalFreedomMod.getPlugin().al.isVanished(player.getName()))
+            if (!TotalFreedomMod.getPlugin().adminList.isVanished(player.getName()))
             {
                 names.add(player.getName());
             }
@@ -835,8 +836,8 @@ public class FUtil
 
     public static int getFakePlayerCount()
     {
-        int i = TotalFreedomMod.getPlugin().al.vanished.size();
-        for (String name : TotalFreedomMod.getPlugin().al.vanished)
+        int i = TotalFreedomMod.getPlugin().adminList.vanished.size();
+        for (String name : TotalFreedomMod.getPlugin().adminList.vanished)
         {
             if (Bukkit.getPlayer(name) == null)
             {

@@ -1,10 +1,8 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
-import net.minecraft.nbt.NBTTagCompound;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.ChatColor;
 import org.bukkit.Tag;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 //codebeat:disable[LOC,ABC]
 
-public class SignBlocker extends FreedomService
+public class SignBlocker extends AbstractService
 {
     @Override
     public void onStart()
@@ -27,11 +25,13 @@ public class SignBlocker extends FreedomService
     {
     }
 
+
+    //TODO: KYORI
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerPlaceBlock(BlockPlaceEvent event)
     {
 
-        final Player player = event.getPlayer();
+        /*final Player player = event.getPlayer();
         if (Tag.SIGNS.getValues().contains(event.getBlock().getType()))
         {
             ItemStack sign = event.getItemInHand();
@@ -48,7 +48,7 @@ public class SignBlocker extends FreedomService
                 player.sendMessage(ChatColor.GRAY + "You are not allowed to place command signs.");
                 event.setCancelled(true);
             }
-        }
+        }*/
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

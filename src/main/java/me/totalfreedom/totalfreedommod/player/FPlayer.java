@@ -1,9 +1,9 @@
 package me.totalfreedom.totalfreedommod.player;
 
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
-import me.totalfreedom.totalfreedommod.caging.CageData;
+import me.totalfreedom.totalfreedommod.punishments.caging.CageData;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
-import me.totalfreedom.totalfreedommod.freeze.FreezeData;
+import me.totalfreedom.totalfreedommod.punishments.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FPlayer
@@ -70,6 +71,8 @@ public class FPlayer
 
 
     private boolean invSee = false;
+
+    private Date currentSessionStart;
 
     public FPlayer(TotalFreedomMod plugin, Player player)
     {
@@ -294,7 +297,7 @@ public class FPlayer
     public void setMuted(boolean muted, int minutes)
     {
         FUtil.cancel(unmuteTask);
-        plugin.mu.MUTED_PLAYERS.remove(getPlayer().getName());
+        plugin.muter.MUTED_PLAYERS.remove(getPlayer().getName());
         unmuteTask = null;
 
         if (!muted)
@@ -307,7 +310,7 @@ public class FPlayer
             return;
         }
 
-        plugin.mu.MUTED_PLAYERS.add(getPlayer().getName());
+        plugin.muter.MUTED_PLAYERS.add(getPlayer().getName());
 
         // TODO: Simplify this into a Consumer<BukkitTask> lambda?
         unmuteTask = new BukkitRunnable()
@@ -323,7 +326,7 @@ public class FPlayer
                 else
                 {
                     FUtil.adminAction(ConfigEntry.SERVER_NAME.getString(), "Unmuting " + getName(), false);
-                    plugin.mu.MUTED_PLAYERS.remove(getName());
+                    plugin.muter.MUTED_PLAYERS.remove(getName());
                 }
             }
         }.runTaskLater(plugin, minutes * (60L * 20L));
@@ -446,6 +449,10 @@ public class FPlayer
 
             FUtil.playerMsg(p, ChatColor.RED + "You have been warned at least twice now, make sure to read the rules at " + ConfigEntry.SERVER_BAN_URL.getString());
         }
+    }
+
+    public void setCurrentSessionStart(Date currentSessionStart) {
+        this.currentSessionStart = currentSessionStart;
     }
 
     public TotalFreedomMod getPlugin()
@@ -696,6 +703,10 @@ public class FPlayer
     public void setInvSee(boolean invSee)
     {
         this.invSee = invSee;
+    }
+
+    public Date getCurrentSessionStart() {
+        return currentSessionStart;
     }
 
     private static class ArrowShooter extends BukkitRunnable

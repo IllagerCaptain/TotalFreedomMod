@@ -84,7 +84,7 @@ public class DiscordToMinecraftListener extends ListenerAdapter
 
                 for (Player player : Bukkit.getOnlinePlayers())
                 {
-                    if (TotalFreedomMod.getPlugin().pl.getData(player).doesDisplayDiscord())
+                    if (TotalFreedomMod.getPlugin().playerList.getData(player).doesDisplayDiscord())
                     {
                         player.spigot().sendMessage(components);
                     }

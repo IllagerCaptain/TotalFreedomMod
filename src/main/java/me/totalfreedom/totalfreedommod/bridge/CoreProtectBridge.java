@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class CoreProtectBridge extends FreedomService
+public class CoreProtectBridge extends AbstractService
 {
     public static Map<Player, FUtil.PaginationList<String>> HISTORY_MAP = new HashMap<>();
     private final List<String> tables = Arrays.asList("co_sign", "co_session", "co_container", "co_block");
@@ -265,7 +265,7 @@ public class CoreProtectBridge extends FreedomService
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Player player = event.getPlayer();
-        PlayerData data = plugin.pl.getData(player);
+        PlayerData data = plugin.playerList.getData(player);
         Block block = event.getClickedBlock();
         final CoreProtectAPI coreProtect = getCoreProtectAPI();
 
@@ -295,7 +295,7 @@ public class CoreProtectBridge extends FreedomService
                     event.setCancelled(true);
                     List<String[]> lookup = coreProtect.blockLookup(block, -1);
 
-                    if (!plugin.al.isAdmin(player))
+                    if (!plugin.adminList.isAdmin(player))
                     {
                         cooldown.put(player.getName(), System.currentTimeMillis());
                     }
@@ -371,7 +371,7 @@ public class CoreProtectBridge extends FreedomService
                         lookup = coreProtect.blockLookup(block, -1);
                     }
 
-                    if (!plugin.al.isAdmin(player))
+                    if (!plugin.adminList.isAdmin(player))
                     {
                         cooldown.put(player.getName(), System.currentTimeMillis());
                     }

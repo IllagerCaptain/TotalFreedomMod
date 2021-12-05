@@ -1,9 +1,13 @@
 package me.totalfreedom.totalfreedommod.world;
 
 import io.papermc.lib.PaperLib;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.FUtil;
+import me.totalfreedom.totalfreedommod.world.impl.AdminWorld;
+import me.totalfreedom.totalfreedommod.world.impl.Flatlands;
+import me.totalfreedom.totalfreedommod.world.impl.MasterBuilderWorld;
+import me.totalfreedom.totalfreedommod.world.manager.WorldWeather;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -14,7 +18,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import static me.totalfreedom.totalfreedommod.util.FUtil.playerMsg;
 
-public class WorldManager extends FreedomService
+public class WorldManager extends AbstractService
 {
 
     public Flatlands flatlands;

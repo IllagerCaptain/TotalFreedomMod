@@ -1,7 +1,7 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
 import java.util.Collection;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-public class PotionBlocker extends FreedomService
+public class PotionBlocker extends AbstractService
 {
 
     public static final int POTION_BLOCK_RADIUS_SQUARED = 20 * 20;

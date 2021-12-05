@@ -1,11 +1,11 @@
 package me.totalfreedom.totalfreedommod.fun;
 
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class MP44 extends FreedomService
+public class MP44 extends AbstractService
 {
     @Override
     public void onStart()
@@ -20,6 +20,6 @@ public class MP44 extends FreedomService
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event)
     {
-        plugin.pl.getPlayer(event.getPlayer()).disarmMP44();
+        plugin.playerList.getPlayer(event.getPlayer()).disarmMP44();
     }
 }

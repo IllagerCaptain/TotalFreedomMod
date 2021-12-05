@@ -1,7 +1,7 @@
 package me.totalfreedom.totalfreedommod.blocking;
 
 import java.util.Objects;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -19,7 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
-public class MobBlocker extends FreedomService
+public class MobBlocker extends AbstractService
 {
     @Override
     public void onStart()

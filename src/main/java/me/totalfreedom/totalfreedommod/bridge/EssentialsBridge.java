@@ -2,7 +2,7 @@ package me.totalfreedom.totalfreedommod.bridge;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -20,7 +20,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class EssentialsBridge extends FreedomService
+public class EssentialsBridge extends AbstractService
 {
 
     private Essentials essentialsPlugin = null;
@@ -139,6 +139,7 @@ public class EssentialsBridge extends FreedomService
         {
             FLog.severe(ex);
         }
+
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -148,15 +149,15 @@ public class EssentialsBridge extends FreedomService
         Inventory inventory = event.getView().getTopInventory();
         InventoryType inventoryType = inventory.getType();
         Player player = (Player)event.getWhoClicked();
-        FPlayer fPlayer = plugin.pl.getPlayer(player);
+        FPlayer fPlayer = plugin.playerList.getPlayer(player);
         if (inventoryType == InventoryType.PLAYER && fPlayer.isInvSee())
         {
             final InventoryHolder inventoryHolder = inventory.getHolder();
             if (inventoryHolder instanceof HumanEntity)
             {
                 Player invOwner = (Player)inventoryHolder;
-                Rank recieverRank = plugin.rm.getRank(player);
-                Rank playerRank = plugin.rm.getRank(invOwner);
+                Rank recieverRank = plugin.rankManager.getRank(player);
+                Rank playerRank = plugin.rankManager.getRank(invOwner);
                 if (playerRank.ordinal() >= recieverRank.ordinal() || !invOwner.isOnline())
                 {
                     event.setCancelled(true);
@@ -185,7 +186,7 @@ public class EssentialsBridge extends FreedomService
         Inventory inventory = event.getView().getTopInventory();
         InventoryType inventoryType = inventory.getType();
         Player player = (Player)event.getPlayer();
-        FPlayer fPlayer = plugin.pl.getPlayer(player);
+        FPlayer fPlayer = plugin.playerList.getPlayer(player);
         if (inventoryType == InventoryType.PLAYER && fPlayer.isInvSee())
         {
             fPlayer.setInvSee(false);

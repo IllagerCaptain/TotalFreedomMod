@@ -2,11 +2,11 @@ package me.totalfreedom.totalfreedommod.bridge;
 
 import me.totalfreedom.tfguilds.Common;
 import me.totalfreedom.tfguilds.TFGuilds;
-import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.services.AbstractService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class TFGuildsBridge extends FreedomService
+public class TFGuildsBridge extends AbstractService
 {
     public boolean enabled = false;
 
