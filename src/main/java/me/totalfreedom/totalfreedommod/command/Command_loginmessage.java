@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
-@CommandParameters(description = "Change your login message", usage = "/<command> [message]")
+@CommandParameters(description = "Change your login message", usage = "/<command> <message>")
 public class Command_loginmessage extends FreedomCommand
 {
     @Override
@@ -24,11 +24,10 @@ public class Command_loginmessage extends FreedomCommand
 
         if (args.length == 0)
         {
-            playerSender.openInventory(plugin.sh.generateLoginMessageGUI(playerSender));
+            msg("You must set a valid login message! Usage: /<command> <message>", ChatColor.RED);
             return true;
         }
 
-        checkRank(Rank.ADMIN);
 
         String message = StringUtils.join(args, " ");
         if (!message.contains("%rank%") && !message.contains("%coloredrank%"))
