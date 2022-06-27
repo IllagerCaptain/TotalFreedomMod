@@ -187,12 +187,6 @@ public class Command_saconfig extends FreedomCommand
                     }
                 }
 
-                if (plugin.pl.isPlayerImpostor(player))
-                {
-                    msg("This player was labeled as a Player impostor and is not an admin, therefore they cannot be added to the admin list.", ChatColor.RED);
-                    return true;
-                }
-
                 if (admin == null) // New admin
                 {
 
@@ -205,22 +199,9 @@ public class Command_saconfig extends FreedomCommand
                 else // Existing admin
                 {
                     FUtil.adminAction(sender.getName(), "Re-adding " + player.getName() + " to the admin list", true);
-
-                    String oldName = admin.getName();
-                    if (!oldName.equals(player.getName()))
-                    {
-                        admin.setName(player.getName());
-                        plugin.sql.updateAdminName(oldName, admin.getName());
-                    }
                     admin.addIp(FUtil.getIp(player));
-
                     admin.setActive(true);
                     admin.setLastLogin(new Date());
-
-                    if (plugin.al.isVerifiedAdmin(player))
-                    {
-                        plugin.al.verifiedNoAdmin.remove(player.getName());
-                    }
 
                     plugin.al.save(admin);
                     plugin.al.updateTables();
@@ -259,7 +240,9 @@ public class Command_saconfig extends FreedomCommand
                 checkRank(Rank.ADMIN);
 
                 Player player = getPlayer(args[1]);
+
                 Admin admin = player != null ? plugin.al.getAdmin(player) : plugin.al.getEntryByName(args[1]);
+                String adminName = admin.getName();
 
                 if (admin == null)
                 {
@@ -272,15 +255,15 @@ public class Command_saconfig extends FreedomCommand
 
                 plugin.al.save(admin);
                 plugin.al.updateTables();
+
                 if (player != null)
                 {
                     plugin.rm.updateDisplay(player);
-                    plugin.pl.getPlayer(player).setAdminChat(false);
                 }
 
                 if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
                 {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
+                    Discord.syncRoles(admin, plugin.pl.getData(adminName).getDiscordID());
                 }
 
                 plugin.ptero.updateAccountStatus(admin);
